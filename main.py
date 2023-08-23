@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, sum, count
 
 # 1 Tratando os dados
 
@@ -71,3 +71,13 @@ print("Candidato a Prefeito com mais votos:",
 print("Candidato a Vereador com mais votos:",
       vereador_max_votos["NM_VOTAVEL"],
       "Total de votos:", vereador_max_votos["TOTAL_VOTOS"])
+
+# 3.2) Perfil Eleitores - estado civil
+
+df_civil = df_joined.select("NM_MUNICIPIO", "DS_GENERO", "DS_ESTADO_CIVIL")
+
+df_contagem = df_civil.groupBy(
+        "NM_MUNICIPIO", "DS_GENERO", "DS_ESTADO_CIVIL").agg(
+        count("*").alias("TOTAL_ELEITORES")).display()
+# aqui o count é para exibir uma outra coluna com
+# a quantidade de eleitores agrupada por essas colunas escolhidas.
