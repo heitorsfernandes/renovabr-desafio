@@ -3,7 +3,9 @@ from pyspark.sql.functions import col, sum, count
 
 # 1 Tratando os dados
 
-spark = SparkSession.builder.appName("Dados Renovabr").getOrCreate()
+spark = SparkSession.builder.appName("Dados Renovabr").config("spark.sql.debug.maxToStringFields", 100).getOrCreate()
+
+
 df_perfil = spark.read.csv(
     "./src/perfil_eleitorado_2020.csv", header=True, sep=";")
 df_sp = spark.read.csv("./src/SP_turno_1.csv", header=True, sep=";")
@@ -78,6 +80,7 @@ df_civil = df_joined.select("NM_MUNICIPIO", "DS_GENERO", "DS_ESTADO_CIVIL")
 
 df_contagem = df_civil.groupBy(
         "NM_MUNICIPIO", "DS_GENERO", "DS_ESTADO_CIVIL").agg(
-        count("*").alias("TOTAL_ELEITORES")).display()
+        count("*").alias("TOTAL_ELEITORES")).show()
+
 # aqui o count é para exibir uma outra coluna com
 # a quantidade de eleitores agrupada por essas colunas escolhidas.
